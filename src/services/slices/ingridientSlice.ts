@@ -2,20 +2,19 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TIngredient } from '../../utils/types';
 import { getIngredientsApi } from '@api';
 
-type ingredientsType = {
+type TIngredientsType = {
   ingredients: TIngredient[];
   isLoading: boolean;
   error: string | null;
 };
 
-const initialState: ingredientsType = {
+const initialState: TIngredientsType = {
   ingredients: [],
   isLoading: false,
   error: null
 };
 
 export const fetchIngredients = createAsyncThunk(
-  // TODO: async thunk проверить как работает? может без асинк
   'ingredients/fetchIngredients',
   async () => getIngredientsApi()
 );

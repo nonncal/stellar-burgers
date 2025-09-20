@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { TConstructorIngredient } from '@utils-types';
 
-type constructorType = {
+type TConstructorType = {
   bun: TConstructorIngredient | null;
   ingredients: TConstructorIngredient[];
 };
 
-const initialState: constructorType = {
+const initialState: TConstructorType = {
   bun: null,
   ingredients: []
 };
