@@ -1,23 +1,48 @@
 import { FC, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
-import { RootState, useDispatch, useSelector } from '../../services/store';
-import { getConstructorItems } from '../../services/slices/constructorSlice';
+import { useDispatch, useSelector } from '../../services/store';
+import {
+  clearConstructor,
+  getConstructorItems
+} from '../../services/slices/constructorSlice';
+import {
+  clearOrder,
+  createAndSubmitOrder,
+  getIsOrderLoading,
+  getOrder
+} from '../../services/slices/orderSlice';
+import { getUser } from '../../services/slices/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
+  const dispatch = useDispatch();
 
-  // const dispatch = useDispatch();
   const constructorItems = useSelector(getConstructorItems);
 
-  const orderRequest = false;
+  const orderRequest = useSelector(getIsOrderLoading);
 
-  const orderModalData = null;
+  const orderModalData = useSelector(getOrder);
+
+  const user = useSelector(getUser);
+
+  const navigate = useNavigate();
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
+    if (!user) {
+      navigate('/login');
+      return;
+    } else {
+      dispatch(createAndSubmitOrder(constructorItems));
+    }
   };
-  const closeOrderModal = () => {};
+  const closeOrderModal = () => {
+    if (!orderRequest) {
+      dispatch(clearConstructor());
+      dispatch(clearOrder());
+    }
+  };
 
   const price = useMemo(
     () =>

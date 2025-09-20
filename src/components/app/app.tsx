@@ -1,4 +1,4 @@
-import { ConstructorPage, Login, NotFound404, Register } from '@pages';
+import { ConstructorPage, Feed, Login, NotFound404, Register } from '@pages';
 import '../../index.css';
 import styles from './app.module.css';
 
@@ -27,6 +27,7 @@ const App = () => {
         {/* location={location || backgroundLocation}*/}
         <Route path='*' element={<NotFound404 />} />
         <Route path='/' element={<ConstructorPage />} />
+        <Route path='/feed' element={<Feed />} />
         <Route path='/ingredients/:id' element={<IngredientDetails />} />
         <Route
           path='/login'
