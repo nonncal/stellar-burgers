@@ -1,14 +1,22 @@
-import { ConstructorPage, Feed, Login, NotFound404, Register } from '@pages';
+import {
+  ConstructorPage,
+  Feed,
+  Login,
+  NotFound404,
+  Profile,
+  Register
+} from '@pages';
 import '../../index.css';
 import styles from './app.module.css';
 
 import { Routes, Route, useLocation } from 'react-router-dom';
 
 import { AppHeader, IngredientDetails } from '@components';
-import { useDispatch } from '../../services/store';
+import { useDispatch, useSelector } from '../../services/store';
 import { useEffect } from 'react';
 import { fetchIngredients } from '../../services/slices/ingridientSlice';
 import { ProtectedRoute } from '../protected-route';
+import { fetchGetUser, getUser } from '../../services/slices/userSlice';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -16,6 +24,7 @@ const App = () => {
   const location = useLocation();
 
   useEffect(() => {
+    dispatch(fetchGetUser());
     dispatch(fetchIngredients());
     console.log(location);
   }, []);
@@ -33,10 +42,13 @@ const App = () => {
           path='/login'
           element={<ProtectedRoute onlyUnAuth component={<Login />} />}
         />
-        <Route path='/register' element={<Register />} />
         <Route
           path='/register'
           element={<ProtectedRoute onlyUnAuth component={<Register />} />}
+        />
+        <Route
+          path='/profile'
+          element={<ProtectedRoute component={<Profile />} />}
         />
       </Routes>
     </div>
