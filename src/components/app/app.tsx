@@ -1,27 +1,39 @@
 import {
   ConstructorPage,
   Feed,
+  ForgotPassword,
   Login,
   NotFound404,
   Profile,
-  Register
+  ProfileOrders,
+  Register,
+  ResetPassword
 } from '@pages';
 import '../../index.css';
 import styles from './app.module.css';
 
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 
-import { AppHeader, IngredientDetails } from '@components';
-import { useDispatch, useSelector } from '../../services/store';
+import { AppHeader, IngredientDetails, OrderInfo } from '@components';
+import { useDispatch } from '../../services/store';
 import { useEffect } from 'react';
 import { fetchIngredients } from '../../services/slices/ingridientSlice';
 import { ProtectedRoute } from '../protected-route';
-import { fetchGetUser, getUser } from '../../services/slices/userSlice';
+import { fetchGetUser } from '../../services/slices/userSlice';
 
 const App = () => {
   const dispatch = useDispatch();
-
   const location = useLocation();
+  const backgroundLocation = location.state?.background;
+  const navigate = useNavigate();
+
+  const closeModalHandle = () => {
+    if (backgroundLocation) {
+      navigate(backgroundLocation);
+    } else {
+      navigate('/');
+    }
+  };
 
   useEffect(() => {
     dispatch(fetchGetUser());
@@ -32,11 +44,12 @@ const App = () => {
   return (
     <div className={styles.app}>
       <AppHeader />
-      <Routes location={location}>
-        {/* location={location || backgroundLocation}*/}
+      {/* location={backgroundLocation || location} */}
+      <Routes>
         <Route path='*' element={<NotFound404 />} />
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
+        <Route path='/feed/:id' element={<OrderInfo />} />
         <Route path='/ingredients/:id' element={<IngredientDetails />} />
         <Route
           path='/login'
@@ -49,6 +62,18 @@ const App = () => {
         <Route
           path='/profile'
           element={<ProtectedRoute component={<Profile />} />}
+        />
+        <Route
+          path='/profile/orders'
+          element={<ProtectedRoute component={<ProfileOrders />} />}
+        />
+        <Route
+          path='/forgot-password'
+          element={<ProtectedRoute onlyUnAuth component={<ForgotPassword />} />}
+        />
+        <Route
+          path='/reset-password'
+          element={<ProtectedRoute onlyUnAuth component={<ResetPassword />} />}
         />
       </Routes>
     </div>
