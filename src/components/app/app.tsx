@@ -14,7 +14,7 @@ import styles from './app.module.css';
 
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 
-import { AppHeader, IngredientDetails, OrderInfo } from '@components';
+import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { useDispatch } from '../../services/store';
 import { useEffect } from 'react';
 import { fetchIngredients } from '../../services/slices/ingridientSlice';
@@ -38,18 +38,16 @@ const App = () => {
   useEffect(() => {
     dispatch(fetchGetUser());
     dispatch(fetchIngredients());
-    console.log(location);
   }, []);
 
   return (
     <div className={styles.app}>
       <AppHeader />
-      {/* location={backgroundLocation || location} */}
-      <Routes>
+      <Routes location={backgroundLocation || location}>
         <Route path='*' element={<NotFound404 />} />
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
-        <Route path='/feed/:id' element={<OrderInfo />} />
+        <Route path='/feed/:number' element={<OrderInfo />} />
         <Route path='/ingredients/:id' element={<IngredientDetails />} />
         <Route
           path='/login'
@@ -68,6 +66,10 @@ const App = () => {
           element={<ProtectedRoute component={<ProfileOrders />} />}
         />
         <Route
+          path='/profile/orders/:number'
+          element={<ProtectedRoute component={<OrderInfo />} />}
+        />
+        <Route
           path='/forgot-password'
           element={<ProtectedRoute onlyUnAuth component={<ForgotPassword />} />}
         />
@@ -76,6 +78,34 @@ const App = () => {
           element={<ProtectedRoute onlyUnAuth component={<ResetPassword />} />}
         />
       </Routes>
+      {backgroundLocation && (
+        <Routes>
+          <Route
+            path='/ingredients/:id'
+            element={
+              <Modal title='' onClose={closeModalHandle}>
+                <IngredientDetails />
+              </Modal>
+            }
+          />
+          <Route
+            path='/feed/:number'
+            element={
+              <Modal title='' onClose={closeModalHandle}>
+                <OrderInfo />
+              </Modal>
+            }
+          />
+          <Route
+            path='/profile/orders/:number'
+            element={
+              <Modal title='' onClose={closeModalHandle}>
+                <OrderInfo />
+              </Modal>
+            }
+          />
+        </Routes>
+      )}
     </div>
   );
 };

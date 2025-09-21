@@ -3,7 +3,12 @@ import { FC, useEffect } from 'react';
 import { TOrder } from '@utils-types';
 import { FeedInfoUI } from '../ui/feed-info';
 import { useSelector } from '../../services/store';
-import { getFeeds, getOrders, getTotal, getTotalToday } from '../../services/slices/ordersSlice';
+import {
+  getFeeds,
+  getOrders,
+  getTotal,
+  getTotalToday
+} from '../../services/slices/ordersSlice';
 
 const setOrders = (orders: TOrder[], status: string): number[] =>
   orders
@@ -23,10 +28,7 @@ export const FeedInfo: FC = () => {
     <FeedInfoUI
       readyOrders={readyOrders}
       pendingOrders={pendingOrders}
-      feed={{orders: feed,
-        total,
-        totalToday
-      }}
+      feed={{ orders: feed, total, totalToday }}
     />
   );
 };

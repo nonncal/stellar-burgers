@@ -15,15 +15,15 @@ export const OrderInfo: FC = () => {
 
   const orderData = useSelector(getSelectedOrder);
 
-  const { id } = useParams();
+  const { number } = useParams();
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (id) {
-      dispatch(fetchGetOrderByNumber(Number(id)));
+    if (number) {
+      dispatch(fetchGetOrderByNumber(Number(number)));
     }
-  }, [id, dispatch]);
+  }, [number, dispatch]);
 
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;

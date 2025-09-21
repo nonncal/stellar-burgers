@@ -20,7 +20,6 @@ export const Feed: FC = () => {
     getStoreFeeds();
   }, []);
 
-  
   if (!orders.length) {
     return <Preloader />;
   }

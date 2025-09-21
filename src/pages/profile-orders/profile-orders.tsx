@@ -16,7 +16,5 @@ export const ProfileOrders: FC = () => {
     return <Preloader />;
   }
 
-  console.log(orders);
-
   return <ProfileOrdersUI orders={orders} />;
 };
