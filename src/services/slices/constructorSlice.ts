@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { TConstructorIngredient } from '@utils-types';
+import { nanoid } from 'nanoid';
 
 export type TConstructorType = {
   bun: TConstructorIngredient | null;
@@ -17,14 +18,14 @@ export const constructorSlice = createSlice({
   reducers: {
     addIngredient: (state, action) => {
       if (action.payload.type === 'bun') {
-        state.bun = action.payload;
+        state.bun = { ...action.payload, uid: nanoid() };
       } else {
-        state.ingredients.push(action.payload);
+        state.ingredients.push({ ...action.payload, uid: nanoid() });
       }
     },
     deleteIngredient: (state, action) => {
       state.ingredients = state.ingredients.filter(
-        (item) => item._id !== action.payload
+        (item) => item.uid !== action.payload
       );
     },
     clearConstructor: (state) => {

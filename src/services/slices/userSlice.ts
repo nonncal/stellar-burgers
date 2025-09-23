@@ -10,7 +10,6 @@ import {
   updateUserApi
 } from '../../utils/burger-api';
 import { deleteCookie, setCookie } from '../../utils/cookie';
-import { get } from 'http';
 
 type TUserState = {
   user: TUser | null;
@@ -20,17 +19,32 @@ type TUserState = {
 
 export const fetchLoginUser = createAsyncThunk(
   'userSlice/loginUser',
-  async (data: TLoginData) => loginUserApi(data)
+  async (data: TLoginData) => {
+    const res = await loginUserApi(data);
+    setCookie('accessToken', res.accessToken);
+    localStorage.setItem('refreshToken', res.refreshToken);
+    return res;
+  }
 );
 
 export const fetchRegisterUser = createAsyncThunk(
   'userSlice/registerUser',
-  async (data: TRegisterData) => registerUserApi(data)
+  async (data: TRegisterData) => {
+    const res = await registerUserApi(data);
+    setCookie('accessToken', res.accessToken);
+    localStorage.setItem('refreshToken', res.refreshToken);
+    return res;
+  }
 );
 
 export const fetchLogoutUser = createAsyncThunk(
   'userSlice/logoutUser',
-  async () => logoutApi()
+  async () => {
+    if (await logoutApi()) {
+      localStorage.removeItem('refreshToken');
+      deleteCookie('accessToken');
+    }
+  }
 );
 
 export const fetchUpdateUser = createAsyncThunk(
@@ -61,8 +75,6 @@ export const userSlice = createSlice({
         state.isLoading = false;
         state.user = action.payload.user;
         state.error = '';
-        setCookie('accessToken', action.payload.accessToken);
-        localStorage.setItem('refreshToken', action.payload.refreshToken);
       })
       .addCase(fetchLoginUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -88,8 +100,6 @@ export const userSlice = createSlice({
         state.isLoading = false;
         state.user = null;
         state.error = '';
-        localStorage.removeItem('refreshToken');
-        deleteCookie('accessToken');
       })
       .addCase(fetchLogoutUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -103,8 +113,6 @@ export const userSlice = createSlice({
         state.isLoading = false;
         state.user = action.payload.user;
         state.error = '';
-        setCookie('accessToken', action.payload.accessToken);
-        localStorage.setItem('refreshToken', action.payload.refreshToken);
       })
       .addCase(fetchRegisterUser.rejected, (state, action) => {
         state.isLoading = false;
