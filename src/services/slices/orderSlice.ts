@@ -1,7 +1,7 @@
 import { orderBurgerApi } from '@api';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
-import { TConstructorType } from './constructorSlice';
+import { clearConstructor, TConstructorType } from './constructorSlice';
 
 type TOrderState = {
   isOrderLoading: boolean;
@@ -26,7 +26,12 @@ export const createAndSubmitOrder = createAsyncThunk(
       ingredients.unshift(data.bun._id);
       ingredients.push(data.bun._id);
     }
-    return await orderBurgerApi(ingredients);
+    const res = await orderBurgerApi(ingredients);
+    if (res.success) {
+      dispatch(clearConstructor());
+      dispatch(clearOrder());
+    }
+    return res;
   }
 );
 
